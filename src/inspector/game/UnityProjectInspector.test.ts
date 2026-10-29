@@ -1,4 +1,4 @@
-import { mkdir, readFile, symlink, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, symlink, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { createTestTempDirectory } from "../../../tests/fixtures/temporaryDirectory.js";
@@ -45,11 +45,8 @@ const fixture = async () => {
 describe("Unity exported game inspection", () => {
   it("joins GUID/scene observations with located stub candidates without changing source", async () => {
     const { root, write } = await fixture();
-    await write("Assets/Resources/prefabs/animation.meta", `guid: ${GUID}\n`);
-    await write(
-      "Assets/resources/prefabs/animation.meta",
-      `guid: cccccccccccccccccccccccccccccccc\n`,
-    );
+    await write("Assets/Duplicate.cs", "public class Duplicate { }");
+    await write("Assets/Duplicate.cs.meta", `guid: ${GUID}\n`);
     await write("Assets/Bad.meta", "fileFormatVersion: 2\nguid: broken\n");
     const original = await readFile(join(root, "Assets/Scripts/Launcher.cs"));
     const inspector = new UnityProjectInspector();
@@ -64,17 +61,11 @@ describe("Unity exported game inspection", () => {
       directory_inventory: "complete",
       selected_text: "complete",
     });
-    expect(report.observations.case_collisions).toContainEqual([
-      "Assets/Resources/prefabs/animation.meta",
-      "Assets/resources/prefabs/animation.meta",
-    ]);
+    expect(report.observations.case_collisions).toEqual([]);
     expect(report.observations.duplicate_guids).toEqual([
       {
         guid: GUID,
-        paths: [
-          "Assets/Resources/prefabs/animation.meta",
-          "Assets/Scripts/Launcher.cs.meta",
-        ],
+        paths: ["Assets/Duplicate.cs.meta", "Assets/Scripts/Launcher.cs.meta"],
       },
     ]);
     expect(report.observations.invalid_meta).toEqual(["Assets/Bad.meta"]);
@@ -132,7 +123,11 @@ describe("Unity exported game inspection", () => {
     const { root, write } = await fixture();
     const outside = await createTestTempDirectory("rea-game-outside-");
     await writeFile(join(outside, "secret.cs"), "private void Awake() { }");
-    await symlink(outside, join(root, "Assets/Linked"), "dir");
+    await symlink(
+      outside,
+      join(root, "Assets/Linked"),
+      process.platform === "win32" ? "junction" : "dir",
+    );
     await write("Assets/Binary.asset", Buffer.from([0, 255, 1, 2]));
     const result = await new UnityProjectInspector().inspect(
       gameProjectInputSchema.parse({ path: root, max_file_bytes: 100 }),
@@ -167,6 +162,31 @@ describe("Unity exported game inspection", () => {
       gameProjectInputSchema.parse({ path: root, max_read_bytes: 1 }),
     );
     expect(budget.ok && budget.value.coverage.selected_text).toBe("partial");
+  });
+});
+
+describe("case-collision producer representation", () => {
+  it("reports distinct exported paths when the host preserves their case", async (context) => {
+    const { root, write } = await fixture();
+    await write("Assets/Resources/prefabs/animation.meta", `guid: ${GUID}\n`);
+    await write(
+      "Assets/resources/prefabs/animation.meta",
+      "guid: cccccccccccccccccccccccccccccccc\n",
+    );
+    const names = await readdir(join(root, "Assets"));
+    if (!names.includes("Resources") || !names.includes("resources")) {
+      context.skip();
+      return;
+    }
+    const result = await new UnityProjectInspector().inspect(
+      gameProjectInputSchema.parse({ path: root }),
+    );
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw result.error;
+    expect(result.value.observations.case_collisions).toContainEqual([
+      "Assets/Resources/prefabs/animation.meta",
+      "Assets/resources/prefabs/animation.meta",
+    ]);
   });
 });
 

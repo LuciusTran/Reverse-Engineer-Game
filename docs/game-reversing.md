@@ -118,3 +118,6 @@ npm run check:fast
 These checks establish static inspection behavior. They are not real Unity,
 Ghidra or Android runtime conformance. Do not commit recovered APKs, game assets,
 native libraries, editor caches or third-party game source to this tooling repo.
+Real-project verification for this fork was performed on Linux. The filesystem
+case-collision regression runs only when the host preserves both case variants;
+it cannot establish that observation on a case-insensitive filesystem.
