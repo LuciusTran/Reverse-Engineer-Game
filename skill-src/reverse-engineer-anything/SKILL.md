@@ -2,7 +2,7 @@
 name: reverse-engineer-anything
 description: Reverse engineer native, managed, Electron/JavaScript, packaged, firmware, and browser targets with REA. Use shipped-artifact or requested runtime evidence to explain features, compare versions, decompile code, or guide a reconstruction. Skip REA for ordinary source-repository architecture analysis.
 metadata:
-  version: "34"
+  version: "35"
 ---
 
 # REA
@@ -88,8 +88,10 @@ explicit path or endpoint and do not need it.
 - Recovered Unity project with missing gameplay or import problems:
   `inspect_game_project` when advertised. Review observed meta/GUID/scene facts
   separately from inferred stub/lifecycle candidates; static inspection cannot
-  establish playability. For APK/IL2CPP recovery, read
-  [game recovery](references/game-recovery.md) before selecting native tools.
+  establish playability. For playable source recovery or restructuring, read
+  [game recovery](references/game-recovery.md) before planning the architecture;
+  it defines the required game recovery and refactoring role. For APK/IL2CPP
+  inputs, also use it before selecting native tools.
 - Firmware image: `inspect_firmware_regions` when advertised. Use
   `extract_firmware` when extraction is requested, with a caller-selected new
   absolute output directory. These tools use caller-supplied Binwalk/Unblob on
@@ -210,6 +212,8 @@ as complete while required questions remain open.
   [references/javascript-applications.md](references/javascript-applications.md)
 - Android APK declarations, classes, methods, and static references:
   [references/android-applications.md](references/android-applications.md)
+- Playable game source recovery and restructuring of recovered gameplay logic:
+  [references/game-recovery.md](references/game-recovery.md)
 - Passive browser/Electron observation and static/runtime reconciliation:
   [references/runtime-observation.md](references/runtime-observation.md)
 - Evidence paging, comparisons, residual unknowns, and verification:

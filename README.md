@@ -50,6 +50,9 @@
 > building, run `node scripts/rea.mjs inspect-game-project /absolute/path/RecoveredGame --json`
 > to inspect asset metadata, build scenes and candidate C# stubs. The game reversing
 > guide below describes native-to-C# recovery and its verification boundaries.
+> Playable recovery must follow the game recovery and refactoring role in that guide:
+> reconstruct maintainable gameplay modules, preserve original behavior and engine
+> bindings, and verify the recovered flow against the supplied evidence.
 
 ---
 

@@ -92,7 +92,11 @@ reported and not followed. Acquisition is not an atomic filesystem snapshot.
    conflicts with backups and preserved GUIDs; inspect launcher and gameplay stub
    candidates alongside the native function evidence. Preserve native-derived C#
    translations separately from newly authored bootstrap/UI/platform adapters.
-6. Verify a complete player flow: launch → enter game → input → collision/merge →
+6. Reconstruct the source architecture around the observed gameplay logic using
+   the role below. Retain an original export and map recovered methods to their
+   new responsibilities; preserve behavior and serialized bindings as the logic
+   moves into maintainable modules.
+7. Verify a complete player flow: launch → enter game → input → collision/merge →
    scoring → loss → retry, then save/load and the secondary systems being claimed.
    Unity compilation alone does not verify physics, UI or gameplay equivalence.
    Keep desktop and Android execution claims separate.
@@ -101,6 +105,78 @@ The repository supports analysis and evidence for this process. It does not
 provide an automatic APK-to-playable-C# converter. A recovered game can require
 method-by-method translation, coroutine recovery and replacement of unavailable
 platform integrations. Record unresolved behavior instead of inventing native facts.
+
+## Game source reconstruction role
+
+For a requested playable restoration or restructuring of recovered game source,
+the agent must act as a **game recovery and refactoring engineer**. The outcome is
+a development codebase whose logic can be understood, modified and verified.
+Exporting assets or implementing a demonstration host around unimplemented
+controllers does not fulfill that request. This role does not broaden a read-only
+analysis request into permission to modify a project.
+
+### Recover responsibilities before choosing a structure
+
+Trace the entry point through input, simulation, interactions, scoring/progression,
+loss, retry and persistence to the extent those systems exist in the selected
+game. Identify who owns each state field, who changes it and when; include
+coroutines, callbacks and frame/event ordering when behavior depends on them.
+Record evidence locations, inferences and unresolved dependencies in a subsystem
+map. Use the original source when supplied, or native/managed methods and packaged
+configuration when reconstructing from a binary.
+
+Use that map to choose boundaries, rather than imposing a fixed architecture on
+every game. A scene or bootstrap should compose systems; it should not become the
+only owner of input, simulation, rules, UI and storage. Extract responsibilities
+when they have distinct state or lifecycle ownership, and keep their interfaces
+small enough to trace a feature end to end. Avoid layers or framework migrations
+that do not help recover or develop the observed behavior.
+
+Keep original artifacts and raw exports outside the working implementation so
+later comparisons retain a stable reference. Maintain a method-to-source mapping
+through refactoring, including code moved into helpers or composed across modules.
+Classify implementations as recovered translations, adaptations with a stated
+coverage boundary, or newly authored integrations. A clean class layout does not
+make authored behavior original source.
+
+### Preserve semantics and engine bindings
+
+Treat restructuring and behavior changes as separate decisions. Preserve branch
+order and independent conditions, state guards, strict/inclusive thresholds,
+timer advancement, numeric units and coordinate spaces. Keep an observed original
+quirk until the user requests a change; do not silently merge conditions or replace
+an unusual equation with a more familiar one. Mark unresolved behavior explicitly.
+
+For Unity, keep MonoScript and asset GUIDs, serialized field identities, prefab
+links and scene references intact when moving scripts or extracting logic.
+Retain engine components as serialization/lifecycle adapters when moving their
+rules into ordinary C# classes. Make update ownership explicit so the original
+component and a new host do not both advance the same state. A claimed save/continue
+flow must retain the timers, flags, inventory and progression fields that affect
+resumed behavior, not only the player's position and score.
+
+### Establish what the recovered source actually does
+
+Use original reference inputs/outputs, managed execution or selected native
+instruction execution for rules where independent comparison is available.
+When only static evidence is available, distinguish source-reviewed regressions
+from execution of the original runtime. Exercise the composed player as well:
+launch, play, interaction, scoring, loss, retry and the secondary systems included
+in the requested scope. Keep editor, desktop, Android and physical input claims
+separate; compilation and test counts do not establish an accuracy percentage.
+
+Deliver the project entry point and required editor/runtime version, the subsystem
+and state map, recovery provenance, verification commands/results and a list of
+remaining behavior gaps. If the user asks for a complete playable recovery,
+resolve the requested flow instead of stopping after import; describe any
+unresolved systems accurately rather than marking them recovered. Write authored
+documentation, comments and UI in English unless the user requests another
+language, while retaining original serialized identifiers and evidence verbatim.
+
+These are agent workflow requirements, not a new automatic recovery engine.
+`inspect_game_project` remains read-only Unity inspection. Other engines require
+their own supported evidence and runtime workflow. Recovered game source, assets
+and binaries belong in a separate project, not in this tooling repository.
 
 ## Verification and contribution scope
 

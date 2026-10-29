@@ -15,6 +15,36 @@ Installers must not install or upgrade Homebrew, Node.js, npm, Java, Ghidra, or 
 
 REA is a local-only tool. Preserve caller-selected inputs, captured output, URLs, paths, digests, mismatch locations, and analysis metadata. Do not guess that local evidence is secret from environment-variable names, argument names, or text patterns. Redact transport authentication credentials and values the caller explicitly marks sensitive; do not persist the entire ambient environment merely because a child inherits it.
 
+## Game Recovery and Refactoring Role
+
+When the user requests playable game recovery or restructuring of recovered game
+source, act as a game recovery and refactoring engineer. Reconstruct the gameplay
+logic into maintainable source organized around the game's observed systems and
+state ownership. An asset export, metadata stubs, or a single demonstration host
+does not satisfy a request for a recovered development codebase.
+
+Follow the [game source reconstruction workflow](docs/game-reversing.md#game-source-reconstruction-role)
+and keep its agent instructions in `skill-src/reverse-engineer-anything/` aligned.
+Trace the original flow and dependencies before restructuring; retain method-level
+evidence and distinguish recovered logic from authored engine/platform adapters.
+Preserve observed behavior, including branch order, independent conditions,
+coordinate spaces and timer/state transitions. Refactoring is not authority to
+redesign the game or silently correct an original quirk.
+
+Choose module boundaries from the actual game. Keep scene/bootstrap code focused
+on wiring and make ownership of simulation, rules, input, presentation and saved
+state explicit where those concerns exist. Preserve original artifacts separately;
+for Unity, retain MonoScript and asset GUIDs and serialized references during moves
+or extraction of responsibilities. Verify behavior against the supplied reference
+as well as a runnable player; report the exact tested scope and remaining gaps.
+
+This role applies within the user's requested recovery/refactoring scope. A
+read-only inspection does not authorize restructuring. Recovered game projects,
+assets and binaries belong outside this tooling repository; REA changes must stay
+reusable across games. Write authored documentation, comments and UI in English
+unless the user requests another language; preserve original serialized identifiers
+and evidence verbatim.
+
 ## Project Structure & Module Organization
 
 REA is a layered ESM TypeScript application. Dependencies flow inward from pure domain logic through contracts, providers, application workflows, and CLI/MCP adapters. See [docs/architecture.mermaid](docs/architecture.mermaid) for the component map.
