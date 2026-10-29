@@ -45,7 +45,6 @@ export const gameProjectReportSchema = z.strictObject({
   engine: z.literal("unity"),
   editor_version: z.string().nullable(),
   inspection_sha256: digestSchema,
-  sources: z.array(sourceSchema),
   coverage: z.strictObject({
     directory_inventory: z.enum(["complete", "partial"]),
     selected_text: z.enum(["complete", "partial"]),
@@ -85,6 +84,7 @@ export const gameProjectReportSchema = z.strictObject({
   }),
   unknowns: z.array(z.string()),
   limitations: z.array(z.string()),
+  sources: z.array(sourceSchema),
 });
 
 export type GameProjectInput = z.infer<typeof gameProjectInputSchema>;

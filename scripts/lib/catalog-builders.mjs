@@ -248,7 +248,7 @@ export const providerCatalog = (sources) => {
       ),
     },
     {
-      identity: sources.artifactProviders.GAME_PROJECT_PROVIDER,
+      identity: sources.gameProject.GAME_PROJECT_PROVIDER,
       contracts: sources.applicationContracts.APPLICATION_TOOL_CONTRACTS.filter(
         ({ name }) => name === "inspect_game_project",
       ),

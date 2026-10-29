@@ -1,4 +1,4 @@
-import { isAbsolute, join } from "node:path";
+import { isAbsolute } from "node:path";
 import type { ExecutionOptions } from "../AnalysisProvider.js";
 import type { GameProjectInspectionPort } from "./GameProjectInspectionPort.js";
 import type { AnalysisError } from "../../domain/analysisErrorBase.js";
@@ -60,11 +60,9 @@ export class GameProjectInspectionService {
     const report = parsed.data;
     return ok(
       createEvidence(
-        {
-          path: report.project_path,
-          format: "directory",
-          sha256: report.inspection_sha256,
-        },
+        // This scan identifies selected text and layout, not every project byte.
+        // Keep its scoped digest in the report rather than inventing a root artifact identity.
+        undefined,
         this.provider.identity,
         {
           operation: OPERATION,
@@ -74,10 +72,8 @@ export class GameProjectInspectionService {
           rawResult: null,
           confidence: "derived",
           limitations: report.limitations,
-          locations: report.sources.map((source) => ({
-            kind: "artifact-path" as const,
-            path: join(report.project_path, ...source.path.split("/")),
-          })),
+          // Per-file paths and hashes already accompany every source inline.
+          locations: [{ kind: "artifact-path", path: report.project_path }],
         },
       ),
     );

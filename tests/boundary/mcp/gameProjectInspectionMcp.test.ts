@@ -87,7 +87,11 @@ describe("game-project CLI/MCP boundary", () => {
       const evidence = evidenceSchema.parse(JSON.parse(cli.stdout));
       expect(evidence.normalized_result).toEqual(report);
       expect(evidence.evidence_id).toBe(structured.evidence_id);
-      expect(evidence.subject?.format).toBe("directory");
+      expect(evidence.subject).toBeNull();
+      expect(evidence.parameters.path).toBe(root);
+      expect(evidence.locations).toEqual([
+        { kind: "artifact-path", path: root },
+      ]);
       expect(await readFile(join(root, "Assets/Game.cs"), "utf8")).toBe(source);
       const malformed = await client.callTool({
         name: "inspect_game_project",
