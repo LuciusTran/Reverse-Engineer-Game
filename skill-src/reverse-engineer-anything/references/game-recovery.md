@@ -36,6 +36,10 @@ Write authored documentation, comments and UI in English unless requested otherw
 preserve original evidence and serialized identifiers verbatim. Keep recovered
 game projects and assets outside the REA tooling repository.
 
+For executable APK/XAPK intake, reusable checkpoints and agent continuation, read
+[APK automation](apk-automation.md). The portable recovery role is bundled in
+[the workspace instructions template](../assets/game-recovery-AGENTS.md).
+
 ## Select and inspect the target
 
 Use `inspect_game_project` on the caller's exported project directory when the
@@ -73,3 +77,16 @@ actual Unity player and the selected target platform before claiming equivalence
 The static project tool returns its budgets and every skipped path. Symlinks,
 binary serialization, packages and unsupported C# syntax can leave incomplete
 coverage. Do not convert missing coverage into proof that code or assets are absent.
+
+## Recover the UI as a system
+
+Trace original panels, navigation/back actions, modal confirmations, HUD state,
+settings, selection/store and progression alongside gameplay. Recover serialized
+hierarchy, atlas coordinates, font glyph metrics/kerning, clipping, anchors, draw
+depth, colliders, callback target/payload and transitions before designing an
+adapter. Locate native coroutine and localization/literal dependencies. Keep
+original references and IDs; changes to legacy rendering require explicit adapter
+coverage. Verify callbacks through the real pointer/collider dispatch path and
+exercise navigation between panels. A screenshot or a newly drawn menu does not
+establish original UI recovery. Include unresolved progression and service state
+in the flow map instead of silently marking those screens complete.

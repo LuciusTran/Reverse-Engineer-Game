@@ -171,6 +171,9 @@ Additional tools and host support depend on the target:
 | Packages and resources | File inventories, digests, plists, Apple bundle anatomy and extracted resources      | [Artifact and JavaScript guide](docs/javascript-artifact-reconstruction.md), [Apple applications](docs/apple-application-analysis.md) |
 | Process behavior       | Terminal output, interactions, exit and filesystem observations, and run comparisons | Linux/macOS with a native PTY; [process capture](docs/process-capture.md)                                                             |
 
+For playable Unity recovery from APK/XAPK, the fork's bundled skill also supplies
+[executable intake/export automation and gameplay/UI recovery instructions](docs/game-reversing.md#import-an-apk-or-xapk).
+
 Static JavaScript and .NET inspection read the supplied files without running
 the application. Runtime capture runs or interacts with the selected target
 using your user permissions; each runtime guide describes its effects.

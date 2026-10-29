@@ -9,6 +9,30 @@ It addresses a common failure: an export can contain every sprite and a valid
 scene while its launcher, collision callbacks and game controller are still
 metadata stubs. Successful import does not establish recovered gameplay.
 
+## Import an APK or XAPK
+
+The packaged skill now includes an executable intake/export helper and a portable
+game-recovery role. Start without installing additional tools:
+
+```sh
+python3 skill-src/reverse-engineer-anything/scripts/apk_recovery.py \
+  --input /absolute/path/Game.xapk --workspace /absolute/path/Game-Recovery
+```
+
+Optionally pass `--assetripper /path/to/AssetRipper.GUI.Free` and
+`--cpp2il /path/to/Cpp2IL --abi arm64-v8a` to run existing export tools. Completed
+stages are hash-verified on resume. Container/split evidence, conflicts, backend
+candidates, tool commands and limitations are retained. Python 3.11+ and a POSIX
+host are required; the workflow was exercised on Linux. See
+[the skill automation procedure](../skill-src/reverse-engineer-anything/references/apk-automation.md)
+for exact behavior, output layout and failure recovery.
+
+Use `$reverse-engineer-anything` with the supplied APK for an agent-driven playable
+recovery. The helper handles acquisition and optional exports; the skill directs
+the agent to recover original gameplay and UI, preserve provenance and verify the
+player. It is not an unattended APK-to-original-C# compiler. No watcher, external
+engine installation or MCP permission changes are performed.
+
 ## Inspect a recovered project
 
 ```sh
@@ -189,6 +213,7 @@ the same temporary project through the CLI and MCP with identical Evidence.
 npm run test:local -- src/inspector/game/UnityProjectInspector.test.ts
 npm run test:focused -- tests/boundary/mcp/gameProjectInspectionMcp.test.ts
 npm run check:fast
+python3 tests/skill-scripts/test_apk_recovery.py
 ```
 
 These checks establish static inspection behavior. They are not real Unity,

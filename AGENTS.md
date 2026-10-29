@@ -57,6 +57,19 @@ REA is a layered ESM TypeScript application. Dependencies flow inward from pure 
 - `docs/public/product-catalog.json`, `docs/verification/managed-conformance-*.json`, and `skills/` are ignored build outputs. Update source contracts and authored instructions in `skill-src/`, then run `npm run build:cached`; never commit derived catalog digests or portable conformance projections.
 - `src/generatedMcpToolCatalog.ts` is build-generated and gitignored. Never commit it; resolve any trace of it in merges by deleting it and running `npm run build:cached`.
 
+## Game recovery agent workflow
+
+For a requested playable game recovery, use the authored
+`skill-src/reverse-engineer-anything/references/apk-automation.md` and portable
+`assets/game-recovery-AGENTS.md` role under that skill. The bundled Python helper
+executes APK/split acquisition and optional existing-tool exports; the agent must
+continue original gameplay AND UI recovery, provenance and player verification.
+Prefer recovered implementations/assets over authored replacements. Cpp2IL metadata
+and an asset export alone do not fulfill a playable recovery. Keep game-specific
+implementations and evidence in the separate game repository. `inspect_game_project`
+remains read-only; the skill helper is not a new CLI/MCP operation or an engine
+installer. Its focused lane is `python3 tests/skill-scripts/test_apk_recovery.py`.
+
 ## Build, Test, and Development Commands
 
 - `npm ci`: install the locked dependencies.
