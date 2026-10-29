@@ -171,6 +171,30 @@ describe("Unity exported game inspection", () => {
 });
 
 describe("game project analysis boundaries", () => {
+  it("reserves a shared byte budget before overlapping file reads", async () => {
+    const { root, write } = await fixture();
+    for (let i = 0; i < 24; i++)
+      await write(
+        `Assets/Budget/${i}.cs`,
+        `public class C${i} { public void Awake() { } }\n`,
+      );
+    const result = await new UnityProjectInspector().inspect(
+      gameProjectInputSchema.parse({ path: root, max_read_bytes: 180 }),
+    );
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw result.error;
+    expect(result.value.coverage.inspected_text_bytes).toBeLessThanOrEqual(180);
+    expect(
+      result.value.sources.reduce((total, source) => total + source.bytes, 0),
+    ).toBeLessThanOrEqual(180);
+    expect(result.value.coverage.selected_text).toBe("partial");
+    expect(
+      result.value.coverage.skipped.some(
+        (s) => s.reason === "total-text-budget-exhausted",
+      ),
+    ).toBe(true);
+  });
+
   it("distinguishes unsupported roots and cancellation", async () => {
     const root = await createTestTempDirectory("rea-game-unsupported-");
     const inspector = new UnityProjectInspector();

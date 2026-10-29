@@ -2,7 +2,27 @@ import type { GameProjectReport } from "../../domain/gameProject.js";
 
 type Candidate = GameProjectReport["inferences"]["stub_candidates"][number];
 
-/** Remove comments/literals while preserving byte positions and line endings. */
+const literalEnd = (
+  source: string,
+  start: number,
+): { end: number; closed: boolean } => {
+  const quote = source[start],
+    verbatim = source[start - 1] === "@";
+  let end = start + 1;
+  while (end < source.length) {
+    if (source[end] === quote) {
+      if (verbatim && source[end + 1] === quote) {
+        end += 2;
+        continue;
+      }
+      return { end: end + 1, closed: true };
+    }
+    end += !verbatim && source[end] === "\\" ? 2 : 1;
+  }
+  return { end: Math.min(end, source.length), closed: false };
+};
+
+/** Remove comments/literals while preserving source positions and line endings. */
 const maskTrivia = (source: string): { text: string; uncertain: boolean } => {
   const output = source.split("");
   let uncertain = false;
@@ -23,28 +43,14 @@ const maskTrivia = (source: string): { text: string; uncertain: boolean } => {
       i = next < 0 ? source.length : next + 2;
       blank(start, i);
     } else if (source[i] === '"' || source[i] === "'") {
-      const quote = source[i];
       if (source.startsWith('"""', i)) {
         uncertain = true;
         return { text: "", uncertain };
       }
-      const verbatim = source[i - 1] === "@";
-      i++;
-      let closed = false;
-      while (i < source.length) {
-        if (source[i] === quote) {
-          if (verbatim && source[i + 1] === quote) {
-            i += 2;
-            continue;
-          }
-          i++;
-          closed = true;
-          break;
-        }
-        i += !verbatim && source[i] === "\\" ? 2 : 1;
-      }
-      uncertain ||= !closed;
-      blank(start, Math.min(i, source.length), true);
+      const literal = literalEnd(source, i);
+      i = literal.end;
+      uncertain ||= !literal.closed;
+      blank(start, i, true);
     } else i++;
   }
   return { text: output.join(""), uncertain };
@@ -74,7 +80,7 @@ export const inspectCSharpStubCandidates = (
   let line = 1;
   // Declaration-shaped methods only; arbitrary calls and control-flow blocks are excluded.
   const declarations =
-    /\b(?:public|private|protected|internal)\s+(?:(?:static|virtual|override|sealed|async|new|unsafe|extern|partial)\s+)*(?:[\w.<>,?\[\]]+\s+)?([\w]+)\s*(?:<[^;{}()]*>)?\s*\([^;{}]*\)\s*(?:where\s+[^{};=>]+)?\s*(\{|=>)/gu;
+    /\b(?:public|private|protected|internal)\s+(?:(?:static|virtual|override|sealed|async|new|unsafe|extern|partial)\s+)*(?:[\w.<>,?[\]]+\s+)?([\w]+)\s*(?:<[^;{}()]*>)?\s*\([^;{}]*\)\s*(?:where\s+[^{};=>]+)?\s*(\{|=>)/gu;
   for (const match of masked.text.matchAll(declarations)) {
     const name = match[1];
     if (name === undefined || match.index === undefined) continue;
