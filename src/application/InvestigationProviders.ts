@@ -11,6 +11,8 @@ export const REA_WORKFLOW_PROVIDER = {
   version: "1",
 } as const;
 
+export { GAME_PROJECT_PROVIDER } from "../domain/gameProject.js";
+
 /** Commit a workflow result to its upstream profile and applicable semantic revision. */
 export const workflowAnalysisProfile = (
   upstream: AnalysisProfileCommitment,
